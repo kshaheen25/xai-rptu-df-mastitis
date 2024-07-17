@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cow Monitoring  Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .header {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+            justify-content: space-between;
+        }
+
+        .card {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 20px;
+            flex: 1 1 calc(30% - 40px);
+            box-sizing: border-box;
+            min-width: 250px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #007BFF;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-item .label {
+            font-weight: bold;
+        }
+
+        .data-item .value {
+            cursor: pointer;
+            color: #007BFF;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .popup img {
+            width: 100%;
+        }
+
+        .popup-close {
+            text-align: right;
+        }
+
+        .popup-close button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 500;
+        }
+
+        #inventoryChart {
+            max-width: 100%;
+        }
+
+        .heat-section {
+            text-align: center;
+        }
+
+        .heat-section .total {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+
+        .heat-section .details {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .heat-section .details div {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .heat-section .details .early,
+        .heat-section .details .conventional,
+        .heat-section .details .late {
+            background-color: #28A745;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+            padding: 10px;
+        }
+
+        .heat-section .details .early {
+            background-color: #5cb85c;
+        }
+
+        .heat-section .details .conventional {
+            background-color: #5bc0de;
+        }
+
+        .heat-section .details .late {
+            background-color: #f0ad4e;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>Cow  Dashboard</h1>
+    </div>
+    <div class="container">
+        <div class="card" id="milk-production">
+            <h3>Milk Production</h3>
+            <div class="data-item">
+                <div class="label">Milk last session:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Milk previous day:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Cows milked last session:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Last 24H average milk per cow:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Fat % last 24H:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Protein % last 24H:</div>
+                <div class="value">--</div>
+            </div>
+        </div>
+        <div class="card" id="health">
+            <h3>Health</h3>
+            <div class="data-item">
+                <div class="label">Mastitis Infected Cows:</div>
+                <a class="value" href="Report3.html" target="_blank" onclick="openPopup(event, this.href)">2</a>
+            </div>
+            <div class="data-item">
+                <div class="label">Digestion Problems:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Ketosis:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Fresh cows to check:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Non-specific health report:</div>
+                <div class="value">--</div>
+            </div>
+        </div>
+        <div class="card" id="heat">
+            <h3>Cows in Heat</h3>
+            <div class="heat-section">
+                <div class="total">--<span>cows</span></div>
+                <div class="details">
+                    <div class="early">Early<br>-- cows</div>
+                    <div class="conventional">Conventional<br>-- cows</div>
+                    <div class="late">Late<br>-- cows</div>
+                </div>
+            </div>
+        </div>
+        <div class="card" id="fertility">
+            <h3>Fertility</h3>
+            <div class="data-item">
+                <div class="label">Animals for insemination:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Suspected abortion:</div>
+                <div class="value">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Anestrus:</div>
+                <div class="value">--</div>
+            </div>
+        </div>
+        <div class="card" id="to-do">
+            <h3>Mastitis Infected Cows: Temperature Over Days(&deg;C)</h3>
+            <iframe src="Table1.html" style="width: 550px;height: 280px;"></iframe>
+            <h3>Mastitis Infected Cows: Infected Udder Over Days(&deg;C)</h3>
+            <iframe src="Udder_table2.html" style="width: 550px;height: 280px;"></iframe>
+            
+
+            
+        
+        </div>
+        
+        <div class="card" id="inventory">
+            <h3>Animals Inventory</h3>
+            <canvas id="inventoryChart"></canvas>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="hidePopup()"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function openPopup(event, href) {
+        // Prevent the default anchor click behavior
+        event.preventDefault();
+        // Open a new window with the given href
+        window.open(href, 'popup', 'width=800,height=600');
+    }
+
+        function hidePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx = document.getElementById('inventoryChart').getContext('2d');
+            var inventoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cows', 'Pregnant (Milk)', 'Open', 'Dry'],
+                    datasets: [{
+                        label: 'Animals Inventory',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            '#007BFF',
+                            '#28A745',
+                            '#FFC107',
+                            '#DC3545'
+                        ],
+                        hoverBackgroundColor: [
+                            '#0056b3',
+                            '#1e7e34',
+                            '#e0a800',
+                            '#bd2130'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            });
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+    const tempCtx = document.getElementById('tempChart').getContext('2d');
+
+    const tempChart = new Chart(tempCtx, {
+        type: 'bar',
+        data: {
+            labels: ['0','1', ' 2 ', ' 3', ' 4',' 5',' 6',''],
+            datasets: [{
+                label: 'Cow_1',
+                data: [0,38,39,40,39,38,55],
+                borderColor: "blue",
+                backgroundColor: "blue",
+                fill: false
+            },{
+                label: 'Cow_4',
+                data: [0,37,37,37, 37,37,52],
+                borderColor: "yellow",
+                backgroundColor: "yellow",
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Day'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 60,
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    },
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value + '°C';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw + '°C';
+                        }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            yMin: 41,
+                            yMax: 41,
+                            borderColor: 'red',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            label: {
+                                content: 'Threshold = 41°C',
+                                enabled: true,
+                                position: 'center'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

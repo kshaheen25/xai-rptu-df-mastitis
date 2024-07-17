@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Line Chart with Threshold Line</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
+
+<canvas id="udder_chart" width="400" height="200"></canvas>
+
+<script>
+function generateDateLabels(startDate, numDays) {
+    const labels = [];
+    for (let i = 0; i < numDays; i++) {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() +i);
+        labels.push(date.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        }));
+    }
+    return labels;
+}  
+document.addEventListener("DOMContentLoaded", function() {
+    const udderCtx = document.getElementById('udder_chart').getContext('2d');
+    const startDate = new Date() ;
+    startDate.setDate(startDate.getDate()-3);
+    const dates = generateDateLabels(startDate, 4);
+
+    new Chart(udderCtx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Cow_1 Front Right',
+                data: [185,250,250,335],
+                borderColor: "black",
+                backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                fill: false
+            },{
+                label: 'Cow_4 Front Left',
+                data: [240,242.5,242.5,342.5],
+                borderColor: "yellow",
+                backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Days'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Udder Inhale Exhale Value'
+                    },
+                    beginAtZero: true,
+                    max: 400
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw;
+                        }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            yMin: 250,
+                            yMax: 250,
+                            borderColor: 'red',
+                            borderWidth: 2,
+                            borderDash: [10, 5],
+                            label: {
+                                content: 'Threshold = 250',
+                                enabled: true,
+                                position: 'center'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

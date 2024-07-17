@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('header_image.png'); /* Add your image path here */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-attachment: fixed; /* Fix the background image position */
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent background for readability */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.upload-section {
+    background-color: #f2f2f2;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.upload-section button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.upload-section button:hover {
+    background-color: #45a049;
+}
+
+.citation {
+    font-style: italic;
+}
+
+header h1 {
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+header p, .developers p {
+    text-align: center;
+}
+
+.developers {
+    background-color: #e8e8e8;
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.user-input, .predictions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.user-input {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.user-input button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.user-input button:hover {
+    background-color: #45a049;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #e8e8e8;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+</style>
+<title>Mastitis Risk Prediction App</title>
+<link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mastitis Detection AI Explainability Survey</h1>
+            <p>This app predicts the Risk of Mastitis in cattle from Udder & Temperature sensors</p>
+        </header>
+        <div class="upload-section">
+            <p>Please click on the button to see the cow dashboard one with explanantion  and other without explanantion</p>
+  <p>Kindly take few mins to analyse both the dashbaord and after  click on the survey button to share your views on both the dashboards.</p>
+ 	<button onclick="location.href='Index.html'">Dashboard </button>
+            
+            <button onclick="location.href='Index2.html'" style="background-color:grey">Dashboard with explanation V1 </button>
+            <button onclick="location.href='Index3.html'" style="background-color:grey">Dashboard with explanation V2</button>
+            <button onclick="location.href='Index4.html'" style="background-color:grey">Dashboard with explanation V3</button>
+           
+            
+        </div>
+        <div class="user-input">
+            <h2>Survey</h2>
+            <button onclick="location.href='https://survey.rptu.de/index.php/479162?newtest=Y&lang=en'">Survey Link</button>
+        </div>
+        <div class="developers">
+            <p>Developed by Shaheen Khan</p>
+            <p>Department of Digital Farming</p>
+            <p>RPTU Kaiserslautern, 2024</p>
+<p class="citation">Please cite this work if you find it useful "CITATION"</p>
+        </div>
+    </div>
+    <script>
+        // JavaScript code for handling file input and table generation removed as it's not needed anymore
+    </script>
+</body>
+</html>

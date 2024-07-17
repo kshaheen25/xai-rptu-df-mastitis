@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastitis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .legend div {
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+        }
+        .legend span {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .early { background-color: #5cb85c; }
+        .conventional { background-color: #5bc0de; }
+        .late { background-color: #f0ad4e; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Mastitis Report</h1>
+    </div>
+    <div class="container">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Cow</th>
+                        <th>Grp</th>
+                        <th>Status</th>
+                        <th>Gyn Status</th>
+                        <th>DIM</th>
+                        <th>Lact. no.</th>
+                        <th>Daily Yield</th>
+                        <th>Daily avg yield</th>
+                        <th>Daily Yield %</th>
+                        <th>Prod Rate %
+                       
+                        </th>
+                        <th>Conductivity%
+                         
+                        <th>Lactose dev %
+                           
+                        <th>Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>15093</td>
+                        <td>40</td>
+                        <td>Milk</td>
+                        <td>Insemination</td>
+                        <td>114</td>
+                        <td>4</td>
+                        <td>25.8</td>
+                        <td>32.7</td>
+                        <td>-21.2</td>
+                        <td>-30       </td>
+                        
+                        
+                        <td>21</td>
+                        <td>-1</td>
+                        <td>DA</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>15153</td>
+                        <td>10 </td>
+                        <td>Milk</td>
+                        <td>Pregnant</td>
+                        <td>287</td>
+                        <td>4</td>
+                        <td>4.7</td>
+                        <td>15.4</td>
+                        <td>-69.5</td>
+                        <td>-73</td>
+                        
+                        
+                        <td>20</td>
+                        <td>-6</td>
+                        <td>DA</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>17005</td>
+                        <td>10</td>
+                        <td>Milk</td>
+                        <td>Pregnant</td>
+                        <td>313</td>
+                        <td>2</td>
+                        <td>14.3</td>
+                        <td>15.5</td>
+                        <td>-7.7</td>
+                       
+                        <td>-2</td>
+                        <td>18</td>
+                        <td>6</td>
+                        <td>DA</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="chart-container">
+            <canvas id="ruminationChart"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var ctx = document.getElementById('ruminationChart').getContext('2d');
+            var ruminationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => i + ":00"),
+                    datasets: [
+                        {
+                            label: 'Rumination Deviation',
+                            data: [0, 12, 22, 33, 49, 53, 67, 23, 77, 53, 60, 45, 40, 36, 25, 10, 0, 10, 20, 30, 40, 50, 60, 70],
+                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                            borderColor: 'rgba(40, 167, 69, 1)',
+                            fill: 'origin'
+                        },
+                        {
+                            label: 'Rumination Deviation 2',
+                            data: [0, 10, 20, 33, 47, 56, 68, 70, 70, 23, 60, 50, 40, 30, 20, 10, 0, 20, 23, 37, 45, 63, 67, 79],
+                            backgroundColor: 'rgba(91, 192, 222, 0.2)',
+                            borderColor: 'rgba(91, 192, 222, 1)',
+                            fill: 'origin'
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Hours/Day'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Rumination Deviation'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

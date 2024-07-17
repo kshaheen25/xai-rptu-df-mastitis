@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bar Chart with Threshold Line</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+</head>
+<body>
+
+<canvas id="tempChart" width="400" height="200"></canvas>
+
+<script>
+function generateDateLabels(startDate, numDays) {
+    const labels = [];
+    for (let i = 0; i < numDays; i++) {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() +i);
+        labels.push(date.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        }));
+    }
+    return labels;
+} 
+document.addEventListener("DOMContentLoaded", function() {
+    const tempCtx = document.getElementById('tempChart').getContext('2d');
+    const startDate = new Date() ;
+    startDate.setDate(startDate.getDate()-3);
+    const dates = generateDateLabels(startDate, 4);
+
+    const tempChart = new Chart(tempCtx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Cow_1',
+                data: [38,39,39,49],
+                borderColor: "blue",
+                backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                fill: false
+            },{
+                label: 'Cow_4',
+                data: [37,37,37,52],
+                borderColor: "yellow",
+                backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Day'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 60,
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    },
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return value + '°C';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw + '°C';
+                        }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            yMin: 41,
+                            yMax: 41,
+                            borderColor: 'red',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            label: {
+                                content: 'Threshold = 41°C',
+                                enabled: true,
+                                position: 'center'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

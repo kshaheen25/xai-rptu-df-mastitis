@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Line Chart with Threshold Line</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+</head>
+<body>
+
+<canvas id="udder_chart" width="400" height="200"></canvas>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const udderCtx = document.getElementById('udder_chart').getContext('2d');
+
+    new Chart(udderCtx, {
+        type: 'bar',
+        data: {
+            labels: ['','Cow_1', 'Cow_4',''],
+            datasets: [{
+                label: 'Cow_1 Front Right',
+                data: [0,335,0,0],
+                borderColor: "black",
+                backgroundColor: "blue",
+                fill: false
+            },{
+                label: 'Cow_4 Front Left',
+                data: [0,0,342.5,0],
+                borderColor: "yellow",
+                backgroundColor: "yellow",
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Today'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Udder Size'
+                    },
+                    beginAtZero: true,
+                    max: 400
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.raw;
+                        }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            yMin: 250,
+                            yMax: 250,
+                            borderColor: 'red',
+                            borderWidth: 2,
+                            borderDash: [10, 5],
+                            label: {
+                                content: 'Threshold = 250',
+                                enabled: true,
+                                position: 'center'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>

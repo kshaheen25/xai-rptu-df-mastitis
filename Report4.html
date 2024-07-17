@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastitis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            padding: 1em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .card {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 20px;
+            flex: 1 1 calc(30% - 40px);
+            box-sizing: border-box;
+            min-width: 250px;
+        }
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            width:800px;
+            margin-bottom:20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .highlight {
+            color: red;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .legend div {
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+        }
+        .legend span {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .early { background-color: #5cb85c; }
+        .conventional { background-color: #5bc0de; }
+        .late { background-color: #f0ad4e; }
+        .column {
+            flex: 1;
+            float: left;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
+            padding: 20px;
+        }
+        .column:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+        .column:nth-child(even) {
+            background-color: #e0e0e0;
+        }
+        
+        .row:after {
+        content: "";
+        display: table;
+        clear: both;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+
+<body>
+<div class="header">
+    <h1>Mastitis Report</h1>
+</div>
+<div class="row">
+    <div class="column">
+        <div class="container">
+            <div class="card" style="width:1000px; height: 240px;">
+                <div class="table-container" style="width: 950px;">
+                    <table id="dataTable" style="width: 950px;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Index</th>
+                                <th rowspan="2">Date</th>
+                                <th rowspan="3">Cow ID</th>
+                                <th rowspan="2">Months_after_giving_birth</th>
+                                <th colspan="4">Udder Values</th>
+                                <th rowspan="2">Udder Temperature</th> 
+                            </tr>
+                            <tr>
+                                <th>Front Left</th>
+                                <th>Front Right</th>
+                                <th>Rear Left</th>
+                                <th>Rear Right</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td id="indexdate"> </td>
+                                <td>Cow_1</td>
+                                <td>3</td>
+                                <td>173</td>
+                                <td style="color: red;">335</td>
+                                <td>173.5</td>
+                                <td>173</td>
+                                <td style="color:red">49</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td id ="indexdate1"></td>
+                                <td>Cow_4</td>
+                                <td>1</td>
+                                <td style="color: red;">342.5</td>
+                                <td>173</td>
+                                <td>171.5</td>
+                                <td>168.5</td>
+                                <td style="color:red">52</td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="card" style="width: 50%; height: 50%; width: 400px;">
+            <img src="Udder Image.png" style="width: 50%; height: 50%; width: 300px;"></img>
+        </div>
+    </div>
+    <div class="column">
+        <div class="card" style="width: 50%; height: 50%; width: 200px;height: 275px;">
+            <img src="Capture1.PNG" style=" width: 200px;height: 220px;"></img>
+            <p>Variation in Udder</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <label for="cow-selector">Select Cow ID:</label>
+        <select id="cow-selector" onchange="showGraph()">
+            <option value="cow1">Cow 1</option>
+            <option value="cow4">Cow 4</option>
+        </select>
+    </div>
+</div>
+
+<div class="row">
+    <div class="column" style="width:800px; height: 600px;">
+        <div class="card" style="width:800px; height: 600px;">
+            <div id="cow1Graphs" class="chart-container" style="width:700px">
+                <h2>Temperature Graph</h2>
+                <div id="graph-container" style="width:600px;height:500px;"></div>
+            </div>  
+        </div> 
+    </div>
+    <div class="column" style="width:1000px; height: 600px;">
+        <div class="card" style="width:800px; height: 600px;">
+            <h2>Udder Graph</h2>
+            <div id="graph-container1" style="width:700px;height:500px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const d = new Date();
+document.getElementById("indexdate").innerHTML = d.toDateString();
+document.getElementById("indexdate1").innerHTML = d.toDateString();
+function generateDateLabels(startDate, numDays) {
+    const labels = [];
+    for (let i = 0; i < numDays; i++) {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() +i);
+        labels.push(date.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        }));
+    }
+    return labels;
+} 
+
+document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('dataTable');
+    const rows = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        for (let j = 2; j < cells.length - 2; j++) {
+            if (parseInt(cells[j].textContent) > 280) {
+                cells[j].classList.add('highlight');
+            }
+        }
+    }
+});
+
+function generateDateLabels(startDate, numDays) {
+    const labels = [];
+    for (let i = 0; i < numDays; i++) {
+        const date = new Date(startDate);
+        date.setDate(date.getDate() + i);
+        labels.push(date.toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short', year: 'numeric'
+        }));
+    }
+    return labels;
+}
+
+function showGraph() {
+    const cowSelector = document.getElementById('cow-selector').value;
+    const tempThreshold = 41;
+    const startDate = new Date() ;
+    startDate.setDate(startDate.getDate()-3);
+    const dates = generateDateLabels(startDate, 4);
+    const tempOriginalData = cowSelector === 'cow1' ? [38, 39, 39, 49] : [37, 37, 37,  52];
+    const tempBelowThresholdData = tempOriginalData.map(value => value > tempThreshold ? tempThreshold : value);
+    const tempAboveThresholdData = tempOriginalData.map(value => value > tempThreshold ? value - tempThreshold : 0);
+    const graphContainer = document.getElementById('graph-container');
+    const graphContainer1 = document.getElementById('graph-container1');
+
+    const tempData = {
+        labels: dates,
+        datasets: [
+            {
+                label: 'Temperature',
+                data: tempBelowThresholdData,
+                backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Temperature Above Threshold',
+                data: tempAboveThresholdData,
+                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                stack: 'Stack 0',
+            }
+        ]
+    };
+
+    const tempOptions = {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Temperature Over Days (°C)'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ' + context.raw + '°C';
+                    }
+                }
+            },
+            datalabels: {
+                display: true,
+                color: 'black',
+                anchor: 'end',
+                align: 'start',
+                formatter: (value, context) => {
+                    const index = context.dataIndex;
+                    const total = tempOriginalData[index];
+                    if (context.datasetIndex === 0 ) {
+                        return total + '°C';
+                    }
+                    return null;
+                }
+            }
+        },
+        scales: {
+            x: {
+                stacked: true,
+                title: {
+                    display: true,
+                    text: 'Days'
+                }
+            },
+            y: {
+                stacked: true,
+                title: {
+                    display: true,
+                    text: 'Temperature (°C)'
+                },
+                beginAtZero: true
+            }
+        }
+    };
+
+    const tempCtx = document.createElement('canvas');
+    tempCtx.id = 'tempChart';
+    graphContainer.innerHTML = ''; // Clear any previous chart
+    graphContainer.appendChild(tempCtx);
+
+    new Chart(tempCtx.getContext('2d'), {
+        type: 'bar',
+        data: tempData,
+        options: tempOptions,
+        plugins: [ChartDataLabels]
+    });
+
+    const iuflThreshold = 250;
+    const iuflOriginalData = cowSelector === 'cow1' ?[169,169,169, 173] : [240,242.5,242.5,342.5];
+    const euflOriginalData = cowSelector === 'cow1' ?  [185,250,250,335] : [173,173,173,173];
+    const rurlOriginalData = cowSelector === 'cow1' ? [161.5,165, 165, 173.5] : [171.5,171.5,171.5,171.5];
+    const rurrOriginalData = cowSelector === 'cow1' ? [150, 150, 151.5,173] : [168.5,168.5,168.5,168.5];
+
+    const iuflBelowThresholdData = iuflOriginalData.map(value => value > iuflThreshold ? iuflThreshold : value);
+    const iuflAboveThresholdData = iuflOriginalData.map(value => value > iuflThreshold ? value - iuflThreshold : 0);
+    const euflBelowThresholdData = euflOriginalData.map(value => value > iuflThreshold ? iuflThreshold : value);
+    const euflAboveThresholdData = euflOriginalData.map(value => value > iuflThreshold ? value - iuflThreshold : 0);
+    const rurlBelowThresholdData = rurlOriginalData.map(value => value > iuflThreshold ? iuflThreshold : value);
+    const rurlAboveThresholdData = rurlOriginalData.map(value => value > iuflThreshold ? value - iuflThreshold : 0);
+    const rurrBelowThresholdData = rurrOriginalData.map(value => value > iuflThreshold ? iuflThreshold : value);
+    const rurrAboveThresholdData = rurrOriginalData.map(value => value > iuflThreshold ? value - iuflThreshold : 0);
+
+    const udderData = {
+        labels: dates.slice(0, 4),
+        datasets: [
+            {
+                label: 'Front Left',
+                data: iuflBelowThresholdData,
+                backgroundColor: 'rgba(0, 128, 128, 0.5)',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Front Left Above Threshold',
+                data: iuflAboveThresholdData,
+                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                stack: 'Stack 0',
+            },
+            {
+                label: 'Front Right',
+                data: euflBelowThresholdData,
+                backgroundColor: 'rgba(0, 0, 255, 0.5)',
+                stack: 'Stack 1',
+            },
+            {
+                label: 'Front Right Above Threshold',
+                data: euflAboveThresholdData,
+                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                stack: 'Stack 1',
+            },
+            {
+                label: 'Rear Left',
+                data: rurlBelowThresholdData,
+                backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                stack: 'Stack 2',
+            },
+            {
+                label: 'Rear Left Above Threshold',
+                data: rurlAboveThresholdData,
+                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                stack: 'Stack 2',
+            },
+            {
+                label: 'Rear Right',
+                data: rurrBelowThresholdData,
+                backgroundColor: 'rgba(128, 0, 128, 0.5)',
+                stack: 'Stack 3',
+            },
+            {
+                label: 'Rear Right Above Threshold',
+                data: rurrAboveThresholdData,
+                backgroundColor: 'rgba(255, 0, 0, 0.5)',
+                stack: 'Stack 3',
+            }
+        ]
+    };
+
+    const udderOptions = {
+        plugins: {
+            title: {
+                display: true,
+                text: `Cow ${cowSelector === 'cow1' ? '1' : '4'} Udder Values Over Days`
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ' + context.raw;
+                    }
+                }
+            },
+            datalabels: {
+                display: true,
+                color: 'black',
+                anchor: 'end',
+                align: 'start',
+                formatter: (value, context) => {
+                    const index = context.dataIndex;
+                    const stack = context.dataset.stack;
+                    if ((stack === 'Stack 0' && context.datasetIndex === 0) || (stack === 'Stack 1' && context.datasetIndex === 2)  || value === rurlAboveThresholdData[index] || value === rurrAboveThresholdData[index]) {
+                        const total = stack === 'Stack 0' ? iuflOriginalData[index] : stack === 'Stack 1' ? euflOriginalData[index] : stack === 'Stack 2' ? rurlOriginalData[index] : rurrOriginalData[index];
+                        return total;
+                    }
+                    return null;
+                }
+            }
+        },
+        scales: {
+            x: {
+                stacked: true,
+                title: {
+                    display: true,
+                    text: 'Days'
+                }
+            },
+            y: {
+                stacked: true,
+                title: {
+                    display: true,
+                    text: 'Udder Values'
+                },
+                beginAtZero: true
+            }
+        }
+    };
+
+    const udderCtx = document.createElement('canvas');
+    udderCtx.id = 'udderChart';
+    graphContainer1.innerHTML = ''; // Clear any previous chart
+    graphContainer1.appendChild(udderCtx);
+
+    new Chart(udderCtx.getContext('2d'), {
+        type: 'bar',
+        data: udderData,
+        options: udderOptions,
+        plugins: [ChartDataLabels]
+    });
+}
+
+document.addEventListener('DOMContentLoaded', showGraph);
+
+function highlightAboveThreshold(values, threshold) {
+    return values.map(value => value > threshold ? 'rgba(255, 102, 102, 0.8)' : 'rgba(0, 128, 128, 1)');
+}
+</script>
+</body>
+</html>
